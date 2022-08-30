@@ -23,6 +23,11 @@ module.exports = {
       maxWidth: {
         "8xl": "1440px",
       },
+      backgroundImage: {
+        mens: "url(/images/mens-img.jpg)",
+        female: "url(/images/female-img.jpg)",
+        accessory: "url(/images/accessory.jpg)",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

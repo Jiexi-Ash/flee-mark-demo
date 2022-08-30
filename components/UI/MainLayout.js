@@ -1,6 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import Navbar from "components/Navbar/Navbar";
+import Footer from "components/Footer/Footer";
 
 function MainLayout({ children }) {
   return (
@@ -11,7 +12,10 @@ function MainLayout({ children }) {
       </Head>
 
       <Navbar />
-      <main className="">{children}</main>
+      <main className="max-w-8xl px-8 py-6 container mx-auto min-h-[80vh]">
+        {children}
+      </main>
+      <Footer />
     </>
   );
 }

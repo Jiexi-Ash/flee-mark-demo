@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import axios from "axios";
 
 const initialState = {
@@ -67,10 +67,43 @@ export const signInUser = createAsyncThunk(
   }
 );
 
+export const autoSignIn = createAsyncThunk(
+  "auth/autoSignIn",
+  async ({ obj, router }, { dispatch }) => {
+    try {
+      const user = await axios.get("/api/users/user");
+      return {
+        name: user.data.name,
+        surname: user.data.surname,
+        email: user.data.email,
+        role: user.data.role,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    signOutUser: (state) => {
+      signOut({ redirect: false });
+      state.user = {
+        name: "",
+        surname: "",
+        email: "",
+        role: "",
+      };
+      state.authenticated = false;
+    },
+
+    setUser(state, action) {
+      state.user = action.payload;
+      state.authenticated = true;
+    },
+  },
   extraReducers: {
     [registerUser.pending]: (state) => {
       state.loading = true;
@@ -96,7 +129,16 @@ const authSlice = createSlice({
     [signInUser.rejected]: (state) => {
       state.loading = false;
     },
+    [autoSignIn.pending]: (state) => {},
+    [autoSignIn.fulfilled]: (state, action) => {
+      console.log("action.payload", action.payload);
+      state.user = action.payload;
+      state.loading = false;
+      state.authenticated = true;
+    },
   },
 });
+
+export const { signOutUser, setUser } = authSlice.actions;
 
 export default authSlice.reducer;
